@@ -1,0 +1,44 @@
+float $baseSize = 3;
+float $noseLength[] = {.5, 1, 1.5};
+float $eyeSize[] = {.2, .3, .5};
+float $headPosition = $baseSize * 3.2;
+float $headSize = $baseSize / 1.5;
+float $mouthSize = $headSize * .05;
+int $hatDimensions = 1;
+int $hatHeight[] = {2, 3};
+float $brimLength[] = {.1, .2, .3, .4, .5};
+float $hatPosition = $headPosition * 1.2;
+
+// create base sphere
+polySphere -radius $baseSize -subdivisionsX 20 -subdivisionsY 20 -axis 0 1 0 -cuv 2 -ch 1 -name ("Base");
+move -relative 0 ($baseSize) 0;
+
+// create middle sphere
+polySphere -radius ($headSize) -subdivisionsX 20 -subdivisionsY 20 -axis 0 1 0 -cuv 2 -ch 1 -name ("midSection");
+move -relative 0 ($baseSize * 2.3) 0;
+
+// create head
+polySphere -radius ($baseSize / 2.5) -subdivisionsX 20 -subdivisionsY 20 -axis 0 1 0 -cuv 2 -ch 1 -name ("Head");
+move -relative 0 ($headPosition) 0;
+
+// create nose
+polyCone -radius ($baseSize * .1) -height ($baseSize * $noseLength[1]) -subdivisionsX 20 -subdivisionsY 1 -subdivisionsZ 0 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1 -name ("Nose");
+rotate -relative -objectSpace -forceOrderXYZ 0 0 -80;
+move -relative ($baseSize / 2) ($baseSize * 3.25) 0;
+
+// create eyes
+polySphere -radius (($baseSize / 2.5) * $eyeSize[0]) -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -name ("Left Eye");
+move -relative ($headPosition * .087) ($headPosition * 1.02) ($headPosition * -.07);
+polySphere -radius (($baseSize / 2.5) * $eyeSize[0]) -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1 -name ("Right Eye");
+move -relative ($headPosition * .087) ($headPosition * 1.02) ($headPosition * .07);
+
+// create hat
+polyCylinder -radius $hatDimensions -height ($hatDimensions *= $hatHeight[0]) -sx 20 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1;
+move -relative 0 $hatPosition 0;
+select -r pCylinder1.f[20:39] ;
+polyExtrudeFacet -constructionHistory 1 -keepFacesTogether 1 -pvx -1.192092896e-07 -pvy 10.52 -pvz -1.788139343e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness ($hatDimensions * .1) -smoothingAngle 30 pCylinder1.f[20:39];
+select -add pCylinder1.f[60:79];
+polyExtrudeFacet -constructionHistory 1 -keepFacesTogether 1 -pvx -1.192092896e-07 -pvy 10.4200001 -pvz -1.788139343e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness ($brimLength[4]) -smoothingAngle 30 pCylinder1.f[60:79];
+
+
+
